@@ -1,0 +1,87 @@
+## CONFIG file
+## change paths with your own!
+
+deterministic: False
+seed: 100
+
+trainset_path: "/fast/jlindqvist/data/lm/slim_pajama/new_sp_15B_tokens/train"
+vocab_size: 50280
+seq_len: 2048
+sampler: 'sequential'
+sampler_seed: null
+num_workers: 4
+
+eval: False
+validset_path: null
+eval_every_steps: null
+
+# --- On-the-fly tokenization (alternative to pre-tokenized trainset_path) ---
+# Set streaming_tokenization: True to use this mode.
+# trainset_path is ignored when streaming_tokenization is True.
+streaming_tokenization: False
+hf_dataset_path: null        # e.g. 'HuggingFaceFW/fineweb-edu'
+hf_dataset_name: null        # e.g. 'sample-10BT'  (dataset config/subset)
+hf_dataset_split: 'train'
+hf_valid_dataset_split: null # e.g. 'validation'; used only when validset_path is null
+hf_streaming: True           # use HF streaming mode (memory-efficient for large datasets)
+tokenizer_path: null         # e.g. 'meta-llama/Llama-2-7b-hf' or a local path
+text_column: 'text'          # column name containing raw text in the HF dataset
+add_bos: True                # prepend BOS token to each document
+add_eos: True                # append EOS token to each document
+
+model: 'transformer'
+d_model: 768
+mlp_class: 'glu'
+expand: '8/3'
+n_layers: 4
+n_heads: 4
+rms_norm: True
+tie_embeddings: False
+torch_compile: True
+
+# note: step budget=token_budget/(seq_len * micro_batch_size * grad_accumulation_steps * ddp_world_size)
+steps_budget: 4800
+
+# note: this is micro batch size if grad_accumulation_steps>1
+# note: with ddp, effective batch size = batch_size * grad_accumulation_steps * ddp_world_size
+micro_batch_size: 32
+grad_accumulation_steps: 8
+
+# note: choose between {float32, float16, bfloat16}
+# note: float16 data type will automatically use a GradScaler
+dtype: 'bfloat16'
+
+optim: 'adamw'
+fused_optim: True 
+lr: 3.e-3
+weight_decay: 0.1
+beta1: 0.9
+beta2: 0.95
+grad_clip: 1.0
+
+scheduler: 'wsd'
+warmup_steps: 0.1
+cooldown_steps: null
+lr_start: 0.0
+lr_end: 1.e-5
+lr_end_pct: null
+
+log_every_steps: 1
+print_progress: True
+
+use_wandb: False
+wandb_project: 'llm'
+wandb_dir: '/fast/jlindqvist/logs/llm/wandb'
+wandb_run_name: 'tr_check'
+exp_name: 'tr_check'
+out_dir: '/fast/jlindqvist/exp/llm'
+over_write: True
+
+resume: False
+resume_step: null
+resume_exp_name: null
+
+save_last_checkpoint: False
+save_intermediate_checkpoints: False
+save_every_steps: null
+

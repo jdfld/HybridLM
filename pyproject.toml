@@ -1,41 +1,48 @@
 [project]
-name = "plainLM"
-description = "Pretrain transofmrers on causal language modeling using PyTorch."
-authors = [
-    { name = "Niccolò Ajroldi" }
-]
-license = { file = "LICENSE" }
-readme = "README.md"
-version = "0.1.0"
-requires-python = ">=3.12"
+name = "SSM_LMs"
+
+version = "0.2.0"
+requires-python = "==3.11.*"  # This removes the warning
 dependencies = [
-    "absl-py>=2.1.0",
-    "numpy>=2.3.4",
+    "torch == 2.6.0",
+    "ninja",
+    "torchvision == 0.21.0",
+    "setuptools",
+    "wandb",
+    "numpy",
+    "pydantic",
     "PyYAML>=6.0.3",
     "schedulefree>=1.4.1",
-    "torch>=2.6.0",
-    "transformers>=4.44.2",
-    "wandb>=0.22.2"
+    "absl-py>=2.1.0",
+    "ray",
+    "einops",
+    "triton == 3.2.0",
+    "datasets >= 3.3.0",
+    "transformers >= 4.48.0",
+    "flash-linear-attention == 0.4.0",
+    "causal-conv1d",
+    "mamba-ssm",
 ]
+
+
+[tool.uv]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+torchvision = { index = "pytorch-cu124" }
+
+causal-conv1d = { url = "https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.5.0.post8/causal_conv1d-1.5.0.post8+cu12torch2.6cxx11abiFALSE-cp311-cp311-linux_x86_64.whl" }
+mamba-ssm = { url = "https://github.com/state-spaces/mamba/releases/download/v2.2.4/mamba_ssm-2.2.4+cu12torch2.6cxx11abiFALSE-cp311-cp311-linux_x86_64.whl"}
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
 
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.ruff]
-line-length = 120
-indent-width = 2
-
-[tool.ruff.format]
-quote-style = "single"
-
-[tool.ruff.lint]
-extend-select = [
-    "BLE",      # disallow catch-all exceptions
-    "F",        # Pyflakes rules
-    "FA",       # Enforce from __future__ import annotations
-    "I",        # Isort rules
-    "ICN",      # Use common import conventions
-    "PLE",      # Pylint Errors
-    "TID",      # Some good import practices
-]
+[tool.setuptools.packages.find]
+include = ["data*", "optim*", "config*", "engine*", "models*", "cluster*"]

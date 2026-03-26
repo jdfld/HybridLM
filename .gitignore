@@ -10,6 +10,9 @@ venv/
 env/
 .venv/
 .env/
+SSM_LMs.egg-info/
+*.sub
+*.lock
 
 # Ignore log files
 *.log
